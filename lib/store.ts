@@ -258,7 +258,7 @@ export const useStoreState = create<StoreState>()(
           description: "A spiritual bookmark crafted with sacred geometry to guide your energy back into harmony",
           price: 299,
           originalPrice: 399,
-          image: "/placeholder.svg?height=300&width=300",
+          image: "/nadis_chakra_bookmark_stick.webp?height=300&width=300",
           category: "Spiritual",
           rating: 4.9,
           reviews: 156,

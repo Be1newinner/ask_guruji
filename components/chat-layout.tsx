@@ -82,7 +82,7 @@ export default function ChatLayout() {
     setInput("")
 
     // Check if user wants to start dummy journey
-    if (currentThread.messages.length === 0 && userMessage.toLowerCase().includes("start dummy journey")) {
+    if (currentThread.messages.length === 0 && userMessage.toLowerCase().includes("start")) {
       addMessage({ content: userMessage, sender: "user" })
       startDummyJourney()
       setTimeout(() => {
@@ -249,7 +249,7 @@ export default function ChatLayout() {
             onClick={() => setIsProfileOpen(true)}
           >
             <Avatar>
-              <AvatarImage src={user?.avatar || "/placeholder.svg"} />
+              <AvatarImage src={user?.avatar || "/nadis_chakra_bookmark_stick.webp"} />
               <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
@@ -367,12 +367,12 @@ export default function ChatLayout() {
                     <Avatar className="h-8 w-8">
                       {message.sender === "user" ? (
                         <>
-                          <AvatarImage src={user?.avatar || "/placeholder.svg"} />
+                          <AvatarImage src={user?.avatar || "/nadis_chakra_bookmark_stick.webp"} />
                           <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
                         </>
                       ) : (
                         <>
-                          <AvatarImage src="/placeholder.svg?height=32&width=32" />
+                          <AvatarImage src="/nadis_chakra_bookmark_stick.webp?height=32&width=32" />
                           <AvatarFallback>🔮</AvatarFallback>
                         </>
                       )}
@@ -410,7 +410,7 @@ export default function ChatLayout() {
                   <div className="flex justify-start">
                     <div className="flex items-start space-x-2 max-w-[70%]">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src="/placeholder.svg?height=32&width=32" />
+                        <AvatarImage src="/nadis_chakra_bookmark_stick.webp?height=32&width=32" />
                         <AvatarFallback>🔮</AvatarFallback>
                       </Avatar>
                       <div className="rounded-lg p-3 bg-muted">
@@ -428,7 +428,7 @@ export default function ChatLayout() {
                   <div className="flex justify-start">
                     <div className="flex items-start space-x-2 max-w-[70%]">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src="/placeholder.svg?height=32&width=32" />
+                        <AvatarImage src="/nadis_chakra_bookmark_stick.webp?height=32&width=32" />
                         <AvatarFallback>🔮</AvatarFallback>
                       </Avatar>
                       <div className="rounded-lg p-3 bg-muted">
