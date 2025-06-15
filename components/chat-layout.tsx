@@ -344,7 +344,7 @@ export default function ChatLayout() {
               <Stars className="h-6 w-6 text-purple-600" />
               <h1 className="text-xl font-serif tracking-wider">{t("AstroChats")}</h1>
               <Badge variant="secondary" className="text-xs">
-                {t("by Asaan Hai Coding")}
+                {t("by Asha Learnology")}
               </Badge>
             </div>
           </div>

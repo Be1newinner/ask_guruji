@@ -4,7 +4,7 @@ export const translations = {
   hindi: {
     // Navigation & UI
     AstroChats: "ज्योतिष चैट",
-    "by Asaan Hai Coding": "आसान है कोडिंग द्वारा",
+    "by Asha Learnology": "आसान है कोडिंग द्वारा",
     "Chat History": "चैट इतिहास",
     "Astro Store": "ज्योतिष स्टोर",
     "Light Mode": "लाइट मोड",
@@ -49,7 +49,7 @@ export const translations = {
   english: {
     // Navigation & UI
     AstroChats: "AstroChats",
-    "by Asaan Hai Coding": "by Asaan Hai Coding",
+    "by Asha Learnology": "by Asha Learnology",
     "Chat History": "Chat History",
     "Astro Store": "Astro Store",
     "Light Mode": "Light Mode",
@@ -94,7 +94,7 @@ export const translations = {
   hinglish: {
     // Navigation & UI
     AstroChats: "AstroChats",
-    "by Asaan Hai Coding": "by Asaan Hai Coding",
+    "by Asha Learnology": "by Asha Learnology",
     "Chat History": "Chat History",
     "Astro Store": "Astro Store",
     "Light Mode": "Light Mode",

@@ -69,7 +69,7 @@ export default function LoginPage() {
           </div>
           <CardTitle className="text-2xl font-serif">Ask Guruji</CardTitle>
           <CardDescription className="text-sm text-muted-foreground">
-            by Asaan Hai Coding
+            by Asha Learnology
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
