@@ -2,16 +2,23 @@
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ShoppingCart, Star } from "lucide-react"
+import { Star, ExternalLink } from "lucide-react"
+import { useTranslation } from "@/lib/translations"
 import type { Product } from "@/lib/store"
 
 interface ProductSuggestionCardProps {
   product: Product
-  onViewDetails: (productId: string) => void
-  onBuyNow: (product: Product) => void
+  onViewProduct?: () => void
+  showViewOnly?: boolean
 }
 
-export default function ProductSuggestionCard({ product, onViewDetails, onBuyNow }: ProductSuggestionCardProps) {
+export default function ProductSuggestionCard({
+  product,
+  onViewProduct,
+  showViewOnly = false,
+}: ProductSuggestionCardProps) {
+  const { t } = useTranslation()
+
   return (
     <Card className="w-full max-w-xs mx-auto bg-card text-card-foreground border border-purple-300 dark:border-purple-700 shadow-lg">
       <CardHeader className="p-3 pb-2">
@@ -35,12 +42,10 @@ export default function ProductSuggestionCard({ product, onViewDetails, onBuyNow
           )}
         </div>
       </CardContent>
-      <CardFooter className="p-3 pt-0 flex gap-2">
-        <Button variant="outline" size="sm" className="flex-1" onClick={() => onViewDetails(product.id)}>
-          🔍 View Details
-        </Button>
-        <Button size="sm" className="flex-1" onClick={() => onBuyNow(product)}>
-          <ShoppingCart className="h-4 w-4 mr-1" /> Buy Now
+      <CardFooter className="p-3 pt-0">
+        <Button className="w-full" onClick={onViewProduct}>
+          <ExternalLink className="h-4 w-4 mr-2" />
+          {t("View Product")}
         </Button>
       </CardFooter>
     </Card>

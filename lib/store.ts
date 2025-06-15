@@ -51,6 +51,12 @@ interface ChatState {
   resetDummyJourney: () => void // New: Resets the dummy journey
 }
 
+// New Language State
+interface LanguageState {
+  currentLanguage: "hindi" | "english" | "hinglish"
+  setLanguage: (language: "hindi" | "english" | "hinglish") => void
+}
+
 export interface Product {
   id: string
   name: string
@@ -103,6 +109,19 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
+    },
+  ),
+)
+
+// New Language Store
+export const useLanguageStore = create<LanguageState>()(
+  persist(
+    (set) => ({
+      currentLanguage: "hinglish",
+      setLanguage: (language) => set({ currentLanguage: language }),
+    }),
+    {
+      name: "language-storage",
     },
   ),
 )
@@ -233,6 +252,24 @@ export const useStoreState = create<StoreState>()(
   persist(
     (set, get) => ({
       products: [
+        {
+          id: "chakra-bookmark",
+          name: "Nadis Chakra Bookmark Stick",
+          description: "A spiritual bookmark crafted with sacred geometry to guide your energy back into harmony",
+          price: 299,
+          originalPrice: 399,
+          image: "/placeholder.svg?height=300&width=300",
+          category: "Spiritual",
+          rating: 4.9,
+          reviews: 156,
+          inStock: true,
+          benefits: [
+            "Daily spiritual reminder",
+            "Sacred geometry design",
+            "Energy alignment",
+            "Mindful reading companion",
+          ],
+        },
         {
           id: "1",
           name: "Shri Hanuman Chalisa Book",
