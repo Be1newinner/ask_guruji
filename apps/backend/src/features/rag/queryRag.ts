@@ -8,8 +8,8 @@ import {
   RunnableSequence,
 } from "@langchain/core/runnables";
 import { PromptTemplate } from "@langchain/core/prompts";
+import { GEMINI_API_KEY } from "@/core/config";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const embeddings = new GoogleGenerativeAIEmbeddings({
   apiKey: GEMINI_API_KEY,
   model: "gemini-embedding-001",

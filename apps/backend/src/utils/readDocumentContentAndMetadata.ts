@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { join } from "path";
-import { SRC_DIR } from "..";
+import { SRC_DIR } from "@/core/config";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 

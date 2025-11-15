@@ -1,4 +1,4 @@
-import { ChunkOutput } from "@/interfaces/types";
+import { Document } from "@/interfaces/document.interface";
 import { v4 as uuidv4, type UUIDTypes } from "uuid";
 
 export function convertArraysToBatches<T>(arr: T[], batch_size: number): T[][] {
@@ -12,11 +12,11 @@ export function convertArraysToBatches<T>(arr: T[], batch_size: number): T[][] {
 
 export function convert_point_format_cb(
   embedding: number[],
-  doc: ChunkOutput
+  doc: Document
 ): {
   id: UUIDTypes;
   vector: number[];
-  payload: ChunkOutput;
+  payload: Document;
 } {
   const doc_id = uuidv4();
 

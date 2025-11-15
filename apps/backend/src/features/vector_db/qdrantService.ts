@@ -2,8 +2,8 @@
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { Document } from "@langchain/core/documents";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { GEMINI_API_KEY } from "@/core/config";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const embeddings = new GoogleGenerativeAIEmbeddings({
   apiKey: GEMINI_API_KEY,
   model: "gemini-embedding-001",

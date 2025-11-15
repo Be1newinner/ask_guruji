@@ -26,9 +26,6 @@ importers:
 
   apps/backend:
     dependencies:
-      '@google/genai':
-        specifier: ^1.20.0
-        version: 1.20.0
       '@langchain/community':
         specifier: ^1.0.3
         version: 1.0.3(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.56.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.9.0(ws@8.18.3)(zod@3.25.76))(zod@3.25.76))(@ibm-cloud/watsonx-ai@1.7.3)(@langchain/core@1.0.5(openai@6.9.0(ws@8.18.3)(zod@3.25.76)))(@qdrant/js-client-rest@1.15.1(typescript@5.9.2))(@tensorflow-models/universal-sentence-encoder@1.3.3(@tensorflow/tfjs-converter@3.21.0(@tensorflow/tfjs-core@3.21.0))(@tensorflow/tfjs-core@3.21.0))(@tensorflow/tfjs-core@3.21.0)(google-auth-library@9.15.1)(ibm-cloud-sdk-core@5.4.4)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(openai@6.9.0(ws@8.18.3)(zod@3.25.76))(pdf-parse@1.1.1)(playwright@1.56.1)(ws@8.18.3)
@@ -47,12 +44,6 @@ importers:
       '@qdrant/js-client-rest':
         specifier: ^1.15.1
         version: 1.15.1(typescript@5.9.2)
-      '@tensorflow-models/universal-sentence-encoder':
-        specifier: ^1.3.3
-        version: 1.3.3(@tensorflow/tfjs-converter@3.21.0(@tensorflow/tfjs-core@3.21.0))(@tensorflow/tfjs-core@3.21.0)
-      axios:
-        specifier: ^1.12.2
-        version: 1.12.2(debug@4.4.3)
       dotenv:
         specifier: ^16.4.7
         version: 16.6.1
@@ -62,9 +53,6 @@ importers:
       langchain:
         specifier: ^1.0.4
         version: 1.0.4(@langchain/core@1.0.5(openai@6.9.0(ws@8.18.3)(zod@3.25.76)))(openai@6.9.0(ws@8.18.3)(zod@3.25.76))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(zod-to-json-schema@3.24.6(zod@3.25.76))
-      pdf-parse:
-        specifier: ^1.1.1
-        version: 1.1.1
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
@@ -81,9 +69,6 @@ importers:
       '@types/node':
         specifier: ^22.14.0
         version: 22.18.6
-      '@types/pdf-parse':
-        specifier: ^1.1.5
-        version: 1.1.5
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.19.0
         version: 8.44.0(@typescript-eslint/parser@8.44.0(eslint@9.36.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.36.0(jiti@2.5.1))(typescript@5.9.2)
@@ -111,9 +96,6 @@ importers:
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.18.6)(typescript@5.9.2)
-      tsconfig-paths:
-        specifier: ^4.2.0
-        version: 4.2.0
       tsx:
         specifier: ^4.19.3
         version: 4.20.5
@@ -648,15 +630,6 @@ packages:
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
-
-  '@google/genai@1.20.0':
-    resolution: {integrity: sha512-QdShxO9LX35jFogy3iKprQNqgKKveux4H2QjOnyIvyHRuGi6PHiz3fjNf8Y0VPY8o5V2fHqR2XqiSVoz7yZs0w==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      '@modelcontextprotocol/sdk': ^1.11.4
-    peerDependenciesMeta:
-      '@modelcontextprotocol/sdk':
-        optional: true
 
   '@google/generative-ai@0.24.1':
     resolution: {integrity: sha512-MqO+MLfM6kjxcKoy0p1wRzG3b4ZZXtPI+z2IE26UogS2Cm/XHO+7gGRBh6gcJsOiIVoH93UwKvW4HdgiOZCy9Q==}
@@ -2134,9 +2107,6 @@ packages:
   '@types/offscreencanvas@2019.3.0':
     resolution: {integrity: sha512-esIJx9bQg+QYF0ra8GnvfianIY8qWB0GBx54PK5Eps6m+xTj86KLavHv6qDhzKcu5UUOgNfJ2pWaIIV7TRUd9Q==}
 
-  '@types/pdf-parse@1.1.5':
-    resolution: {integrity: sha512-kBfrSXsloMnUJOKi25s3+hRmkycHfLK6A09eRGqF/N8BkQoPUmaCr+q8Cli5FnfohEz/rsv82zAiPz/LXtOGhA==}
-
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
 
@@ -3567,11 +3537,6 @@ packages:
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
 
-  json5@2.2.3:
-    resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
-    engines: {node: '>=6'}
-    hasBin: true
-
   jsonfile@6.2.0:
     resolution: {integrity: sha512-FGuPw30AdOIUTRMC2OMRtQV+jkVj2cfPqSeWXv1NEAJ1qZ5zb1X6z1mFhbfOB/iy3ssJCD+3KuZ8r8C3uVFlAg==}
 
@@ -4635,10 +4600,6 @@ packages:
     resolution: {integrity: sha512-gmBGslpoQJtgnMAvOVqGZpEz9dyoKTCzy2nfz/n8aIFhN/jCE/rCmcxabB6jOOHV+0WNnylOxaxBQPSvcWklhA==}
     engines: {node: '>=12'}
 
-  strip-bom@3.0.0:
-    resolution: {integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==}
-    engines: {node: '>=4'}
-
   strip-final-newline@2.0.0:
     resolution: {integrity: sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==}
     engines: {node: '>=6'}
@@ -4786,10 +4747,6 @@ packages:
         optional: true
       '@swc/wasm':
         optional: true
-
-  tsconfig-paths@4.2.0:
-    resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
-    engines: {node: '>=6'}
 
   tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
@@ -5309,16 +5266,6 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
 
   '@floating-ui/utils@0.2.10': {}
-
-  '@google/genai@1.20.0':
-    dependencies:
-      google-auth-library: 9.15.1
-      ws: 8.18.3
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - supports-color
-      - utf-8-validate
 
   '@google/generative-ai@0.24.1': {}
 
@@ -6373,10 +6320,12 @@ snapshots:
     dependencies:
       '@tensorflow/tfjs-converter': 3.21.0(@tensorflow/tfjs-core@3.21.0)
       '@tensorflow/tfjs-core': 3.21.0
+    optional: true
 
   '@tensorflow/tfjs-converter@3.21.0(@tensorflow/tfjs-core@3.21.0)':
     dependencies:
       '@tensorflow/tfjs-core': 3.21.0
+    optional: true
 
   '@tensorflow/tfjs-core@3.21.0':
     dependencies:
@@ -6390,6 +6339,7 @@ snapshots:
       seedrandom: 3.0.5
     transitivePeerDependencies:
       - encoding
+    optional: true
 
   '@tokenizer/token@0.3.0': {}
 
@@ -6505,7 +6455,8 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/long@4.0.2': {}
+  '@types/long@4.0.2':
+    optional: true
 
   '@types/mime@1.3.5': {}
 
@@ -6532,11 +6483,8 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/offscreencanvas@2019.3.0': {}
-
-  '@types/pdf-parse@1.1.5':
-    dependencies:
-      '@types/node': 22.18.6
+  '@types/offscreencanvas@2019.3.0':
+    optional: true
 
   '@types/prop-types@15.7.15': {}
 
@@ -6563,7 +6511,8 @@ snapshots:
 
   '@types/retry@0.12.0': {}
 
-  '@types/seedrandom@2.4.34': {}
+  '@types/seedrandom@2.4.34':
+    optional: true
 
   '@types/send@0.17.5':
     dependencies:
@@ -6586,7 +6535,8 @@ snapshots:
 
   '@types/uuid@10.0.0': {}
 
-  '@types/webgl-ext@0.0.30': {}
+  '@types/webgl-ext@0.0.30':
+    optional: true
 
   '@typescript-eslint/eslint-plugin@8.44.0(@typescript-eslint/parser@8.44.0(eslint@9.36.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.36.0(jiti@2.5.1))(typescript@5.9.2)':
     dependencies:
@@ -6681,7 +6631,8 @@ snapshots:
       '@typescript-eslint/types': 8.44.0
       eslint-visitor-keys: 4.2.1
 
-  '@webgpu/types@0.1.16': {}
+  '@webgpu/types@0.1.16':
+    optional: true
 
   abort-controller@3.0.0:
     dependencies:
@@ -6856,7 +6807,8 @@ snapshots:
 
   basic-ftp@5.0.5: {}
 
-  bignumber.js@9.3.1: {}
+  bignumber.js@9.3.1:
+    optional: true
 
   binary-extensions@2.3.0: {}
 
@@ -7163,6 +7115,7 @@ snapshots:
   debug@3.2.7:
     dependencies:
       ms: 2.1.3
+    optional: true
 
   debug@4.4.3:
     dependencies:
@@ -7766,6 +7719,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    optional: true
 
   gcp-metadata@6.1.1:
     dependencies:
@@ -7775,6 +7729,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    optional: true
 
   get-intrinsic@1.3.0:
     dependencies:
@@ -7873,8 +7828,10 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    optional: true
 
-  google-logging-utils@0.0.2: {}
+  google-logging-utils@0.0.2:
+    optional: true
 
   gopd@1.2.0: {}
 
@@ -7894,6 +7851,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    optional: true
 
   handlebars@4.7.8:
     dependencies:
@@ -8239,14 +8197,13 @@ snapshots:
   json-bigint@1.0.0:
     dependencies:
       bignumber.js: 9.3.1
+    optional: true
 
   json-buffer@3.0.1: {}
 
   json-schema-traverse@0.4.1: {}
 
   json-stable-stringify-without-jsonify@1.0.1: {}
-
-  json5@2.2.3: {}
 
   jsonfile@6.2.0:
     dependencies:
@@ -8287,6 +8244,7 @@ snapshots:
       buffer-equal-constant-time: 1.0.1
       ecdsa-sig-formatter: 1.0.11
       safe-buffer: 5.2.1
+    optional: true
 
   jws@3.2.2:
     dependencies:
@@ -8297,6 +8255,7 @@ snapshots:
     dependencies:
       jwa: 2.0.1
       safe-buffer: 5.2.1
+    optional: true
 
   keyv@4.5.4:
     dependencies:
@@ -8418,7 +8377,8 @@ snapshots:
       chalk: 4.1.2
       is-unicode-supported: 0.1.0
 
-  long@4.0.0: {}
+  long@4.0.0:
+    optional: true
 
   loose-envify@1.4.0:
     dependencies:
@@ -8565,11 +8525,13 @@ snapshots:
 
   node-domexception@1.0.0: {}
 
-  node-ensure@0.0.0: {}
+  node-ensure@0.0.0:
+    optional: true
 
   node-fetch@2.6.13:
     dependencies:
       whatwg-url: 5.0.0
+    optional: true
 
   node-fetch@2.7.0:
     dependencies:
@@ -8786,6 +8748,7 @@ snapshots:
       node-ensure: 0.0.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   peek-readable@4.1.0: {}
 
@@ -9148,7 +9111,8 @@ snapshots:
 
   scheduler@0.26.0: {}
 
-  seedrandom@3.0.5: {}
+  seedrandom@3.0.5:
+    optional: true
 
   semver@6.3.1: {}
 
@@ -9364,8 +9328,6 @@ snapshots:
     dependencies:
       ansi-regex: 6.2.2
 
-  strip-bom@3.0.0: {}
-
   strip-final-newline@2.0.0: {}
 
   strip-json-comments@2.0.1: {}
@@ -9548,12 +9510,6 @@ snapshots:
       typescript: 5.9.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-
-  tsconfig-paths@4.2.0:
-    dependencies:
-      json5: 2.2.3
-      minimist: 1.2.8
-      strip-bom: 3.0.0
 
   tslib@1.14.1: {}
 
