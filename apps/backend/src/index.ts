@@ -1,33 +1,32 @@
-import { readDocumentContentAndMetadata } from "./utils/readDocumentContentAndMetadata";
-import path, { dirname } from "path";
-import { fileURLToPath } from "url";
-import { vectorDB } from "./features/vector_db";
+import express from "express";
+import dotenv from "dotenv";
+import documentRoutes from "./routes/document.routes";
+import queryRoutes from "./routes/query.routes";
+import statusRoutes from "./routes/status.routes";
 import { EMBEDDING_SIZE } from "./core/config";
+import { vectorDB } from "./features/vector_db";
 
-export const SRC_DIR = path.join(
-  dirname(fileURLToPath(import.meta.url)),
-  "..",
-  "assets"
-);
+dotenv.config();
 
-// console.log("SRC", SRC_DIR);
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-async function main() {
-  console.log("Starting RAG pipeline test...");
+app.use(express.json());
+app.use("/documents", documentRoutes);
+app.use("/query", queryRoutes);
+app.use("/status", statusRoutes);
 
-  await vectorDB.setupCollection(EMBEDDING_SIZE);
-
-  const pdf = await readDocumentContentAndMetadata(
-    "Bhagavad-gita-As-It_is.pdf"
-  );
-
-  // await vectorDB.addDocument(pdf.chunks[0]);
-  await vectorDB.addDocumentsBulk(pdf.chunks.slice(0, 4));
-
-  const question = "What is the main teaching of the Bhagavad Gita?";
-  const answer = await vectorDB.queryRag(question);
-  console.log("Question:", question);
-  console.log("Answer:", answer);
+async function setupVectorDB() {
+  try {
+    await vectorDB.setupCollection(EMBEDDING_SIZE);
+    console.log("Qdrant collection setup complete.");
+  } catch (error) {
+    console.error("Failed to setup Qdrant collection:", error);
+  }
 }
 
-main();
+setupVectorDB();
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

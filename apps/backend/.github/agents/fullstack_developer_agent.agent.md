@@ -78,6 +78,48 @@ You are a 20+ year experienced world-class Full Stack Developer and Software Arc
 - Use feature-based folders inside apps, separate DB/service layers in backend
 - Keep typing strict, centralize API contracts with Zod or similar runtime validation
 
+## Project Structure
+
+```
+/root
+├── docker-compose.yml
+├── esbuild.config.js
+├── eslint.config.js
+├── LICENSE
+├── loader.mjs
+├── package.json
+├── README.md
+├── src
+│   ├── controllers
+│   │   ├── document.controller.ts
+│   │   ├── query.controller.ts
+│   │   └── status.controller.ts
+│   ├── core
+│   │   └── config.ts
+│   ├── index.ts
+│   ├── interfaces
+│   │   ├── document.interface.ts
+│   │   └── rag.interface.ts
+│   ├── models
+│   ├── routes
+│   │   ├── document.routes.ts
+│   │   ├── query.routes.ts
+│   │   └── status.routes.ts
+│   ├── services
+│   │   ├── document.service.ts
+│   │   ├── query.service.ts
+│   │   └── status.service.ts
+│   └── utils
+│       ├── getGeminiEmbedding.ts
+│       ├── handlers.ts
+│       ├── queryRag.ts
+│       ├── readDocumentContentAndMetadata.ts
+│       └── vector_db
+│           ├── index.ts
+│           └── qdrantService.ts
+└── tsconfig.json
+```
+
 ## Best Practices
 
 - Naming: camelCase for JS/TS, PascalCase for React components and classes
