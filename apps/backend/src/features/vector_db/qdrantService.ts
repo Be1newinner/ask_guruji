@@ -1,34 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChunkOutput } from "@/interfaces/types";
-import {
-  getGeminiEmbedding,
-  getGeminiEmbeddingsBulk,
-} from "@/utils/getGeminiEmbedding";
-import { convertArraysToBatches } from "@/utils/handlers";
-import { UUIDTypes, v4 as uuidv4 } from "uuid";
+import { QdrantVectorStore } from "@langchain/qdrant";
+import { Document } from "@langchain/core/documents";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 
-// Add Document
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const embeddings = new GoogleGenerativeAIEmbeddings({
+  apiKey: GEMINI_API_KEY,
+  model: "gemini-embedding-001",
+});
+
 export async function addDocument(
-  doc: ChunkOutput,
+  doc: { text: string; metadata?: Record<string, any> },
   qdrantClient: any,
-  EMBEDDING_SIZE: number,
   COLLECTION_NAME: string
-): Promise<{ message: string; id: string }> {
+): Promise<{ message: string; ids: any }> {
   try {
-    const embedding = await getGeminiEmbedding(doc.text, EMBEDDING_SIZE);
-    console.log({ embedding });
-    const doc_id = uuidv4();
-    const info = await qdrantClient.upsert(COLLECTION_NAME, {
-      points: [
-        {
-          id: doc_id,
-          vector: embedding,
-          payload: { text: doc.text, metadata: doc.metadata ?? {} },
-        },
-      ],
+    const documents = [
+      new Document({
+        pageContent: doc.text,
+        metadata: doc.metadata,
+      }),
+    ];
+    const qdrantVectorStore = new QdrantVectorStore(embeddings, {
+      client: qdrantClient,
+      collectionName: COLLECTION_NAME,
     });
-    console.log("info", info);
-    return { message: "Document added successfully", id: doc_id };
+    const ids = await qdrantVectorStore.addDocuments(documents);
+    return { message: "Document added successfully", ids };
   } catch (e) {
     throw new Error(
       `An unknown error occurred while adding the document: ${e}`
@@ -37,61 +35,37 @@ export async function addDocument(
 }
 
 export async function addDocumentsBulk(
-  docs: ChunkOutput[],
+  docs: { text: string; metadata?: Record<string, any> }[],
   qdrantClient: any,
-  EMBEDDING_SIZE: number,
-  COLLECTION_NAME: string,
-  batchSize: number = 100,
-  start_at: number = 0
+  COLLECTION_NAME: string
 ): Promise<{
   message: string;
   info: any;
   failedPoints: number[];
 }> {
-  const docs_batches = convertArraysToBatches<ChunkOutput>(
-    docs.slice(start_at),
-    batchSize
-  );
-  // console.log(docs_batches.flat(), docs_batches.flat().length);
-  const points: { id: UUIDTypes; vector: number[]; payload: ChunkOutput }[] =
-    [];
-  const failedBatchIndexes: number[] = [];
-
-  for (let i = 0; i < docs_batches.length; i++) {
-    try {
-      const batchEmbeddings = await getGeminiEmbeddingsBulk(
-        docs_batches[i],
-        EMBEDDING_SIZE
-      );
-      points.push(...batchEmbeddings);
-    } catch (e: unknown) {
-      console.error(e);
-      if (
-        (e as Error).message.includes("429") ||
-        (e as Error).message.includes("quota")
-      ) {
-        failedBatchIndexes.push(start_at + i);
-        break;
-      }
-      failedBatchIndexes.push(start_at + i);
-    }
-  }
-
-  if (!points.length)
+  try {
+    const documents = docs.map(
+      (doc) =>
+        new Document({
+          pageContent: doc.text,
+          metadata: doc.metadata,
+        })
+    );
+    const qdrantVectorStore = new QdrantVectorStore(embeddings, {
+      client: qdrantClient,
+      collectionName: COLLECTION_NAME,
+    });
+    await qdrantVectorStore.addDocuments(documents);
     return {
-      message: "no document is added!",
+      message: "Documents added successfully",
       info: null,
-      failedPoints: failedBatchIndexes,
+      failedPoints: [],
     };
-
-  const info = await qdrantClient.upsert(COLLECTION_NAME, {
-    points: points.flat(),
-  });
-  return {
-    message: "Documents added successfully",
-    info: info,
-    failedPoints: failedBatchIndexes,
-  };
+  } catch (e) {
+    throw new Error(
+      `An unknown error occurred while adding documents in bulk: ${e}`
+    );
+  }
 }
 
 // Get Collection Info

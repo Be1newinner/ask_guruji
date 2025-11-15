@@ -1,76 +1,42 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import "dotenv/config";
-import { readFile } from "fs/promises";
 import { join } from "path";
-import pdfParse from "pdf-parse";
 import { SRC_DIR } from "..";
-
-function chunkString(text: string, size: number) {
-  const chunks = [];
-  for (let i = 0; i < text.length; i += size) {
-    chunks.push(text.slice(i, i + size));
-  }
-  return chunks;
-}
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 
 export async function readDocumentContentAndMetadata(fileName: string) {
   try {
     const pdfPath = join(SRC_DIR, "pdfs", fileName);
-    const existingPdfBytes = await readFile(pdfPath);
 
-    const pagePromises: Array<Promise<{ page: number; text: string }>> = [];
-    let totalPages = 0;
-    let docInfo: any = {};
+    const loader = new PDFLoader(pdfPath);
+    const docs = await loader.load();
 
-    const data = await pdfParse(existingPdfBytes, {
-      pagerender: (pageData: any) => {
-        const promise = pageData.getTextContent
-          ? pageData.getTextContent().then((tc: any) => ({
-              page: pageData.pageIndex + 1,
-              text: tc.items
-                .map((item: any) => item.str)
-                .join(" ")
-                .trim(),
-            }))
-          : Promise.resolve({ page: pageData.pageIndex + 1, text: "" });
-        pagePromises.push(promise);
-        totalPages = pageData.transport
-          ? pageData.transport.numPages
-          : totalPages;
-        return "";
-      },
+    const textSplitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 500,
+      chunkOverlap: 50,
     });
-    docInfo = data.info;
+    const splitDocs = await textSplitter.splitDocuments(docs);
 
-    const pageTexts: Array<{ page: number; text: string }> =
-      await Promise.all(pagePromises);
-
-    const chunksWithMeta: any[] = [];
-    for (const { page, text } of pageTexts) {
-      const chunks = chunkString(text, 500);
-      chunks.forEach((chunk, idx) => {
-        chunksWithMeta.push({
-          text: chunk,
-          metadata: {
-            chunkId: idx + 1,
-            page: page,
-            fileName: fileName,
-            title: data.info.Title,
-            author: data.info.Author,
-            keywords: data.info.Keywords,
-            created_at: data.info.CreationDate,
-            modified_at: data.info.ModDate,
-            total: totalPages || data.numpages,
-          },
-        });
-      });
-    }
+    const chunksWithMeta = splitDocs.map((doc, idx) => ({
+      text: doc.pageContent,
+      metadata: {
+        chunkId: idx + 1,
+        page: doc.metadata.loc.pageNumber,
+        fileName: fileName,
+        title: doc.metadata.title || "",
+        author: doc.metadata.author || "",
+        keywords: doc.metadata.keywords || "",
+        created_at: doc.metadata.creationDate || "",
+        modified_at: doc.metadata.modDate || "",
+        total: docs.length,
+      },
+    }));
 
     return {
-      numPages: totalPages || data.numpages,
+      numPages: docs.length,
       chunks: chunksWithMeta,
-      info: docInfo,
-      metadata: data.metadata,
+      info: docs[0]?.metadata || {},
+      metadata: docs[0]?.metadata || {},
     };
   } catch (error) {
     console.log("PDF PARSER ERROR: ", error);

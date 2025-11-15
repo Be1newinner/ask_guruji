@@ -1,31 +1,33 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { QdrantClient } from "@qdrant/js-client-rest";
 import { readDocumentContentAndMetadata } from "./utils/readDocumentContentAndMetadata";
-import { dirname } from "path";
+import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { vectorDB } from "./features/vector_db";
+import { EMBEDDING_SIZE } from "./core/config";
 
-export const SRC_DIR = dirname(fileURLToPath(import.meta.url));
+export const SRC_DIR = path.join(
+  dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "assets"
+);
 
-// Configuration
+// console.log("SRC", SRC_DIR);
 
 async function main() {
   console.log("Starting RAG pipeline test...");
-  // await vectorDB.setupCollection();
-  const pdf = await readDocumentContentAndMetadata("bhagavad-gita.pdf");
-  // console.log(pdf.info);
-  // console.log(pdf.numPages);
-  // console.log(pdf.chunks);
-  // const d: DocumentInput = {
-  //   text: "Sample document about AI.",
-  //   metadata: { type: "sample" },
-  // };
-  console.log(await vectorDB.addDocumentsBulk(pdf.chunks, 20));
 
-  // console.log(await addDocument());
-  // const q: QueryInput = { question: "What is AI?", top_k: 1 };
-  // console.log(await queryRag(q));
-  // console.log(await getCollectionInfo());
+  await vectorDB.setupCollection(EMBEDDING_SIZE);
+
+  const pdf = await readDocumentContentAndMetadata(
+    "Bhagavad-gita-As-It_is.pdf"
+  );
+
+  // await vectorDB.addDocument(pdf.chunks[0]);
+  await vectorDB.addDocumentsBulk(pdf.chunks.slice(0, 4));
+
+  const question = "What is the main teaching of the Bhagavad Gita?";
+  const answer = await vectorDB.queryRag(question);
+  console.log("Question:", question);
+  console.log("Answer:", answer);
 }
 
 main();

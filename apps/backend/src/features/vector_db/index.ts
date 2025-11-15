@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { QdrantClient } from "@qdrant/js-client-rest";
 import {
   addDocument,
@@ -5,83 +6,84 @@ import {
   getCollectionInfo,
   setupCollection,
 } from "./qdrantService";
-import { COLLECTION_NAME, EMBEDDING_SIZE, QDRANT_URL } from "@/core/config";
-import { ChunkOutput } from "@/interfaces/types";
+import { COLLECTION_NAME, QDRANT_URL } from "@/core/config";
+import { queryRag } from "@/utils/queryRag";
+
+interface CollectionInfo {
+  collection_name: string;
+  vectors_count: number;
+  status: string;
+}
 
 export interface VectorDBInterface {
-  addDocument(doc: ChunkOutput): Promise<{ message: string; id: string }>;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getCollectionInfo(): Promise<any>;
-
-  setupCollection(): Promise<void>;
+  addDocument(doc: {
+    text: string;
+    metadata?: Record<string, any>;
+  }): Promise<{ message: string; id: string }>;
+  addDocumentsBulk(
+    docs: { text: string; metadata?: Record<string, any> }[]
+  ): Promise<{
+    message: string;
+    info: Record<string, any> | null;
+    failedPoints: number[];
+  }>;
+  getCollectionInfo(): Promise<CollectionInfo>;
+  setupCollection(EMBEDDING_SIZE: number): Promise<void>;
+  queryRag(question: string): Promise<string>;
 }
 
 class VectorDB implements VectorDBInterface {
-  private readonly EMBEDDING_SIZE: number;
   private readonly COLLECTION_NAME: string;
   private readonly qdrantClient: QdrantClient;
 
-  constructor(
-    embeddingSize: number,
-    collectionName: string,
-    QdrantClient: QdrantClient
-  ) {
-    this.EMBEDDING_SIZE = embeddingSize;
+  constructor(collectionName: string, QdrantClient: QdrantClient) {
     this.COLLECTION_NAME = collectionName;
     this.qdrantClient = QdrantClient;
   }
 
-  async addDocument(
-    doc: ChunkOutput
-  ): Promise<{ message: string; id: string }> {
-    return await addDocument(
+  async addDocument(doc: {
+    text: string;
+    metadata?: Record<string, any>;
+  }): Promise<{ message: string; id: string }> {
+    const data = await addDocument(
       doc,
       this.qdrantClient,
-      this.EMBEDDING_SIZE,
+      this.COLLECTION_NAME
+    );
+    return { id: data.ids[0], message: data.message };
+  }
+
+  async addDocumentsBulk(
+    docs: { text: string; metadata?: Record<string, any> }[]
+  ): Promise<{
+    message: string;
+    info: Record<string, any> | null;
+    failedPoints: number[];
+  }> {
+    return await addDocumentsBulk(
+      docs,
+      this.qdrantClient,
       this.COLLECTION_NAME
     );
   }
 
-  //   docs: ChunkOutput[],
-  // qdrantClient: any,
-  // EMBEDDING_SIZE: number,
-  // COLLECTION_NAME: string,
-
-  async addDocumentsBulk(
-    docs: ChunkOutput[],
-    batchSize?: number,
-    start_at?: number
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): Promise<{ message: string; info: any; failedPoints: number[] }> {
-    return await addDocumentsBulk(
-      docs,
-      this.qdrantClient,
-      this.EMBEDDING_SIZE,
-      this.COLLECTION_NAME,
-      batchSize,
-      start_at
-    );
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async getCollectionInfo(): Promise<any> {
+  async getCollectionInfo(): Promise<CollectionInfo> {
     return await getCollectionInfo(this.qdrantClient, this.COLLECTION_NAME);
   }
 
-  async setupCollection(): Promise<void> {
+  async setupCollection(EMBEDDING_SIZE: number): Promise<void> {
     return await setupCollection(
       this.qdrantClient,
       this.COLLECTION_NAME,
-      this.EMBEDDING_SIZE
+      EMBEDDING_SIZE
     );
+  }
+
+  async queryRag(question: string): Promise<string> {
+    return await queryRag(question, this.qdrantClient, this.COLLECTION_NAME);
   }
 }
 
-const qdrantClient = new QdrantClient({ url: QDRANT_URL });
+export const qdrantClient = new QdrantClient({ url: QDRANT_URL });
 
-export const vectorDB = new VectorDB(
-  EMBEDDING_SIZE,
-  COLLECTION_NAME,
-  qdrantClient
-);
+export const vectorDB = new VectorDB(COLLECTION_NAME, qdrantClient);

@@ -1,68 +1,62 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { QueryInput, RAGResponse } from "@/interfaces/types";
-import axios from "axios";
-import { getGeminiEmbedding } from "./getGeminiEmbedding";
+import { QdrantVectorStore } from "@langchain/qdrant";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+import {
+  RunnablePassthrough,
+  RunnableSequence,
+} from "@langchain/core/runnables";
+import { PromptTemplate } from "@langchain/core/prompts";
 
-// Query RAG
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const embeddings = new GoogleGenerativeAIEmbeddings({
+  apiKey: GEMINI_API_KEY,
+  model: "gemini-embedding-001",
+});
+const model = new ChatGoogleGenerativeAI({
+  apiKey: GEMINI_API_KEY,
+  model: "gemini-2.5-flash",
+  temperature: 0.1,
+});
+
+const EXAMPLE_PROMPT_TEMPLATE = `
+    Answer the question based only on the following context:
+
+    {context}
+
+    Question: {question}
+    `;
+
+const examplePrompt = PromptTemplate.fromTemplate(EXAMPLE_PROMPT_TEMPLATE);
+
 export async function queryRag(
-  query: QueryInput,
-  GEMINI_API_KEY: string,
-  EMBEDDING_SIZE: number,
+  question: string,
   qdrantClient: any,
   COLLECTION_NAME: string
-): Promise<RAGResponse> {
+): Promise<string> {
   try {
-    const query_embedding = await getGeminiEmbedding(
-      query.question,
-      EMBEDDING_SIZE
-    );
-    const results = await qdrantClient.search(COLLECTION_NAME, {
-      vector: query_embedding,
-      limit: query.top_k ?? 3,
-      with_payload: true,
+    const qdrantVectorStore = new QdrantVectorStore(embeddings, {
+      client: qdrantClient,
+      collectionName: COLLECTION_NAME,
     });
 
-    const retrieved_docs = results
-      .map((result: any) => ({
-        text: result?.payload?.text as string,
-        metadata: result?.payload?.metadata ?? {},
-        similarity_score: result.score,
-      }))
-      .filter((doc: any) => doc.text);
+    const retriever = qdrantVectorStore.asRetriever();
 
-    if (retrieved_docs.length === 0) {
-      return {
-        answer:
-          "I couldn't find any relevant documents to answer your question.",
-        retrieved_documents: [],
-      };
-    }
+    const setupAndRetrieval = RunnableSequence.from([
+      RunnablePassthrough.assign({
+        context: (input: Record<string, unknown>) =>
+          retriever
+            .invoke(input.question as string)
+            .then((docs) => docs.map((doc) => doc.pageContent).join("\n\n")), // map to string here
+      }),
+      examplePrompt,
+      model,
+      new StringOutputParser(),
+    ]);
 
-    const context = retrieved_docs.map((doc: any) => doc.text).join("\n\n");
-    const augmented_prompt = `
-Based on the following context information, please answer the question.
-If the answer cannot be found in the context, please say so.
-
-Context:
-${context}
-
-Question: ${query.question}
-
-Answer:
-    `.trim();
-
-    // Gemini Pro API call (as per 2025, use x-goog-api-key header!)
-    const geminiResponse = await axios.post(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
-      {
-        contents: [{ role: "user", parts: [{ text: augmented_prompt }] }],
-      },
-      { headers: { "x-goog-api-key": GEMINI_API_KEY } }
-    );
-    const answer =
-      geminiResponse.data.candidates?.[0]?.content?.parts?.[0]?.text ??
-      "Could not generate an answer from the provided context.";
-    return { answer, retrieved_documents: retrieved_docs };
+    const response = await setupAndRetrieval.invoke({ question });
+    return response;
   } catch (e) {
     throw new Error(
       `Error processing query: ${e instanceof Error ? e.message : String(e)}`
