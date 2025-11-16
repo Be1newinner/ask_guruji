@@ -1,4 +1,5 @@
 accelerate
+fastapi
 huggingface-hub
 langchain
 langchain-community
@@ -10,7 +11,9 @@ optimum
 optimum-onnx
 pypdf
 python-dotenv
+python-multipart
 qdrant-client
 sentence-transformers
 tokenizers
 transformers
+uvicorn
