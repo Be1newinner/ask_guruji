@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This file contains the core logic for the RAG (Retrieval-Augmented Generation) system.
+ * It uses a Qdrant vector store to retrieve relevant documents and a Google Generative AI model to generate answers.
+ */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
@@ -10,16 +14,26 @@ import {
 import { PromptTemplate } from "@langchain/core/prompts";
 import { GEMINI_API_KEY } from "@/core/config";
 
+/**
+ * The Google Generative AI Embeddings instance.
+ */
 const embeddings = new GoogleGenerativeAIEmbeddings({
   apiKey: GEMINI_API_KEY,
   model: "gemini-embedding-001",
 });
+
+/**
+ * The Google Generative AI model instance.
+ */
 const model = new ChatGoogleGenerativeAI({
   apiKey: GEMINI_API_KEY,
   model: "gemini-2.5-flash",
   temperature: 0.1,
 });
 
+/**
+ * The prompt template for the RAG chain.
+ */
 const EXAMPLE_PROMPT_TEMPLATE = `
     Answer the question based only on the following context:
 
@@ -28,8 +42,18 @@ const EXAMPLE_PROMPT_TEMPLATE = `
     Question: {question}
     `;
 
+/**
+ * The prompt template instance.
+ */
 const examplePrompt = PromptTemplate.fromTemplate(EXAMPLE_PROMPT_TEMPLATE);
 
+/**
+ * Queries the RAG system to get an answer to a question.
+ * @param question The question to ask the RAG system.
+ * @param qdrantClient The Qdrant client instance.
+ * @param COLLECTION_NAME The name of the collection in the Qdrant vector store.
+ * @returns A promise that resolves to the generated answer.
+ */
 export async function queryRag(
   question: string,
   qdrantClient: any,

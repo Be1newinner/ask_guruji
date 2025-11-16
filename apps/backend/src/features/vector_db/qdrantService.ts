@@ -1,14 +1,28 @@
+/**
+ * @fileoverview This file contains service functions for interacting with the Qdrant vector database.
+ * It provides functions for adding documents, getting collection information, and setting up collections.
+ */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { Document } from "@langchain/core/documents";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { GEMINI_API_KEY } from "@/core/config";
 
+/**
+ * The Google Generative AI Embeddings instance.
+ */
 const embeddings = new GoogleGenerativeAIEmbeddings({
   apiKey: GEMINI_API_KEY,
   model: "gemini-embedding-001",
 });
 
+/**
+ * Adds a single document to the Qdrant collection.
+ * @param doc The document to add, containing text and optional metadata.
+ * @param qdrantClient The Qdrant client instance.
+ * @param COLLECTION_NAME The name of the collection.
+ * @returns A promise that resolves to an object containing a success message and the IDs of the added document.
+ */
 export async function addDocument(
   doc: { text: string; metadata?: Record<string, any> },
   qdrantClient: any,
@@ -34,6 +48,13 @@ export async function addDocument(
   }
 }
 
+/**
+ * Adds multiple documents to the Qdrant collection in bulk.
+ * @param docs An array of documents to add.
+ * @param qdrantClient The Qdrant client instance.
+ * @param COLLECTION_NAME The name of the collection.
+ * @returns A promise that resolves to an object containing a success message, info, and any failed points.
+ */
 export async function addDocumentsBulk(
   docs: { text: string; metadata?: Record<string, any> }[],
   qdrantClient: any,
@@ -68,6 +89,12 @@ export async function addDocumentsBulk(
   }
 }
 
+/**
+ * Gets information about a Qdrant collection.
+ * @param qdrantClient The Qdrant client instance.
+ * @param COLLECTION_NAME The name of the collection.
+ * @returns A promise that resolves to an object containing the collection name, vectors count, and status.
+ */
 // Get Collection Info
 export async function getCollectionInfo(
   qdrantClient: any,
@@ -87,6 +114,13 @@ export async function getCollectionInfo(
   }
 }
 
+/**
+ * Sets up a Qdrant collection if it does not already exist.
+ * @param qdrantClient The Qdrant client instance.
+ * @param COLLECTION_NAME The name of the collection.
+ * @param EMBEDDING_SIZE The size of the embeddings to use for the collection.
+ * @returns A promise that resolves when the collection is set up.
+ */
 // Setup Qdrant Collection
 export async function setupCollection(
   qdrantClient: any,

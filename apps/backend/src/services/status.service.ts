@@ -1,10 +1,31 @@
+/**
+ * @fileoverview This file contains the service for managing the application status.
+ * It provides a way to track the uptime and the last indexed time.
+ */
 import { StatusResponse } from "../interfaces/rag.interface";
 
+/**
+ * Interface for the status service.
+ */
 export interface StatusService {
+  /**
+   * Sets the timestamp of the last time a document was indexed.
+   * @param timestamp The timestamp to set.
+   */
   setLastIndexed(timestamp: Date): void;
+
+  /**
+   * Gets the current status of the application.
+   * @returns The current status of the application.
+   */
   getStatus(): StatusResponse;
 }
 
+/**
+ * Formats a duration in milliseconds into a human-readable string.
+ * @param milliseconds The duration in milliseconds.
+ * @returns A human-readable string representing the duration.
+ */
 const formatUptime = (milliseconds: number): string => {
   const seconds = Math.floor(milliseconds / 1000);
   const minutes = Math.floor(seconds / 60);
@@ -20,6 +41,10 @@ const formatUptime = (milliseconds: number): string => {
   return parts.join(", ") || "0 seconds";
 };
 
+/**
+ * Creates a new status service instance.
+ * @returns A new status service instance.
+ */
 export const createStatusService = (): StatusService => {
   const startTime = new Date();
   let lastIndexed: Date | null = null;

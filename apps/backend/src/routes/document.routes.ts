@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This file defines the routes for document-related operations.
+ * It includes routes for ingesting, retrieving, and deleting documents.
+ */
 import {
   deleteDocumentByIdController,
   getDocumentByIdController,
@@ -7,6 +11,10 @@ import { Router } from "express";
 import multer from "multer";
 
 const router = Router();
+/**
+ * Multer instance for handling file uploads.
+ * It uses memory storage to store the uploaded file as a buffer.
+ */
 const upload = multer({ storage: multer.memoryStorage() });
 
 /**

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This file contains the controllers for document-related operations.
+ * It handles the ingestion, retrieval, and deletion of documents.
+ */
 import { Request, Response } from "express";
 import {
   deleteDocumentByIdService,
@@ -8,6 +12,12 @@ import { createStatusService } from "@/services/status.service";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 
+/**
+ * Controller for ingesting documents.
+ * It handles file uploads, splits the document into chunks, and ingests them into the vector database.
+ * @param req The Express request object.
+ * @param res The Express response object.
+ */
 export const ingestDocumentsController = async (
   req: Request,
   res: Response
@@ -46,6 +56,11 @@ export const ingestDocumentsController = async (
   }
 };
 
+/**
+ * Controller for retrieving a document by its ID.
+ * @param req The Express request object.
+ * @param res The Express response object.
+ */
 export const getDocumentByIdController = async (
   req: Request,
   res: Response
@@ -63,6 +78,11 @@ export const getDocumentByIdController = async (
   }
 };
 
+/**
+ * Controller for deleting a document by its ID.
+ * @param req The Express request object.
+ * @param res The Express response object.
+ */
 export const deleteDocumentByIdController = async (
   req: Request,
   res: Response

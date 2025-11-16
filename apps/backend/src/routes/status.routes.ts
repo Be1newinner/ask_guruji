@@ -1,3 +1,6 @@
+/**
+ * @fileoverview This file defines the route for checking the status of the application.
+ */
 import { getStatusController } from "@/controllers/status.controller";
 import { Router } from "express";
 

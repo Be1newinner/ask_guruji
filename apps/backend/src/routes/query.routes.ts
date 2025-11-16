@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This file defines the routes for query-related operations.
+ * It includes routes for retrieving documents and generating answers.
+ */
 import {
   generateAnswerController,
   retrieveDocumentsController,

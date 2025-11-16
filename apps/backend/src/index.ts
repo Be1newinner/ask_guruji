@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This is the main entry point for the Express application.
+ * It initializes the server, sets up routes, and connects to the vector database.
+ */
 import "dotenv/config";
 
 import express from "express";
@@ -20,6 +24,10 @@ app.use("/documents", documentRoutes);
 app.use("/query", queryRoutes);
 app.use("/status", statusRoutes);
 
+/**
+ * Sets up the Qdrant vector database collection.
+ * It ensures that the collection is created with the correct embedding size.
+ */
 async function setupVectorDB() {
   try {
     await vectorDB.setupCollection(EMBEDDING_SIZE);
