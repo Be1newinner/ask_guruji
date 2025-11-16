@@ -1,104 +1,96 @@
----
-tags:
-- embedding
-- onnx
-- gemma
-- semantic-search
-- sentence-similarity
-language:
-- en
-license: mit
----
+# PDF Processing and Embedding Service
 
-# embeddinggemma-300m-onnx
+This project provides a robust and scalable FastAPI service for processing PDF documents, generating high-quality embeddings using a custom ONNX-optimized Gemma model, and storing them in a Qdrant vector database. The service is designed to handle long-running ingestion tasks efficiently by using a non-blocking, asynchronous architecture with background tasks and job status polling.
 
-## Model Overview
+## Key Features
 
-**embeddinggemma-300m-onnx** is an efficient ONNX-exported version of Google's Gemma embedding model consisting of approximately 300 million parameters.  
-It generates high-quality semantic embeddings for text, suitable for a wide variety of NLP tasks including sentence similarity, text clustering, classification, and retrieval.
+-   **Asynchronous PDF Ingestion**: Upload PDF files through a RESTful API. The ingestion process runs in the background, allowing the client to receive an immediate response with a unique `job_id`.
+-   **Job Status Management**: The API provides endpoints to track the real-time progress of ingestion jobs, stop running jobs, and delete job records. This is particularly useful for managing long-running training tasks and providing a better user experience.
+-   **Local ONNX-Optimized Embedding Model**: The service utilizes a custom `gemma` embedding model that has been converted to the ONNX (Open Neural Network Exchange) format. This optimization significantly improves performance and allows the model to run efficiently on local hardware or even in a browser environment. The ONNX model is hosted on Hugging Face: [embeddinggemma-300m-onnx](https://huggingface.co/be1newinner/embeddinggemma-300m-onnx).
+-   **Custom Text Cleaning**: Before chunking, the text extracted from PDFs is processed through a custom cleaning and normalization pipeline, which is especially effective for text from OCR'd documents.
+-   **Modular and Scalable Architecture**: The project is structured with a clear separation of concerns, making it easy to maintain, extend, and scale.
 
-Converting the original Gemma embedding model to ONNX allows hardware-agnostic, optimized inference across CPUs and GPUs using ONNX Runtime.
+## Project Structure
 
-## Original Model Reference
+The project is organized into the following directories:
 
-This model is based on the Google Gemma embedding architecture known for its efficiency and multilingual capabilities.  
-Refer to the original Hugging Face repository and documentation here:  
-[google/embeddinggemma-300m](https://huggingface.co/google/embeddinggemma-300m)  
-Please cite the original papers when using this model in research or production.
+-   `app/`: The main application directory.
+    -   `api.py`: Defines the FastAPI routes and application logic.
+    -   `config.py`: Manages configuration and environment variables.
+    -   `embedding/`: Contains the logic for the ONNX-optimized Gemma embedding model.
+    -   `scripts/`: Includes utility scripts, such as the ONNX model conversion script.
+    -   `services/`: Houses the business logic, including PDF processing, Qdrant interaction, job management, and text splitting.
 
-## Intended Use Cases
+## API Endpoints
 
-- Semantic similarity scoring  
-- Embedding generation for search and recommendation systems  
-- Text classification and clustering  
-- Scalable, low-latency inference setups requiring ONNX-compatible models
+The following endpoints are available:
 
-## Repository Files
+| Method   | Path                       | Description                                                                                              |
+| -------- | -------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `POST`   | `/train`                   | Uploads a PDF file and starts the ingestion process in the background. Returns a `job_id`.               |
+| `GET`    | `/train/status/{job_id}`   | Retrieves the current status and progress of a specific ingestion job.                                   |
+| `POST`   | `/train/stop/{job_id}`     | Stops a running ingestion job.                                                                           |
+| `DELETE` | `/train/delete/{job_id}`   | Deletes the record of an ingestion job.                                                                  |
 
-| Filename                 | Description                             |
-|--------------------------|---------------------------------------|
-| `model.onnx`             | ONNX model file containing network weights and graph |
-| `config.json`            | Model configuration file used by transformers |
-| `tokenizer.json`         | Tokenizer vocabulary and merges       |
-| `tokenizer_config.json`  | Tokenizer config                       |
-| `special_tokens_map.json`| Map of special tokens used during tokenization |
+## Setup and Installation
 
-## Installation
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository_url>
+    cd <repository_directory>
+    ```
 
-```
-pip install onnxruntime transformers huggingface_hub
-```
+2.  **Create and activate a Python virtual environment:**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate
+    ```
 
-## Usage
+3.  **Install the required dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-### 1. Using the model locally after cloning or downloading files
+4.  **Create a `.env` file** in the root directory and add your Qdrant credentials:
+    ```
+    QDRANT_URL=<your_qdrant_url>
+    QDRANT_API_KEY=<your_qdrant_api_key>
+    COLLECTION_NAME=<your_qdrant_collection_name>
+    ```
 
-```
-import onnxruntime as ort
-from transformers import AutoTokenizer
+5.  **Run the FastAPI server:**
+    ```bash
+    python -m app.main
+    ```
 
-tokenizer = AutoTokenizer.from_pretrained(".")
-session = ort.InferenceSession("./model.onnx")
+## Usage Example
 
-text = "Example input text"
-inputs = tokenizer(text, return_tensors="np")
-outputs = session.run(None, dict(inputs))
-embeddings = outputs
-print(embeddings)
-```
+Once the server is running, you can start a new ingestion job by sending a `POST` request to the `/train` endpoint with a PDF file.
 
-### 2. Using the model directly from Hugging Face Hub (no manual download)
-
-```
-from huggingface_hub import hf_hub_download
-import onnxruntime as ort
-from transformers import AutoTokenizer
-
-tokenizer = AutoTokenizer.from_pretrained("be1newinner/embeddinggemma-300m-onnx")
-onnx_model_path = hf_hub_download(
-    repo_id="be1newinner/embeddinggemma-300m-onnx",
-    filename="model.onnx"
-)
-session = ort.InferenceSession(onnx_model_path)
-
-text = "Example input text"
-inputs = tokenizer(text, return_tensors="np")
-outputs = session.run(None, dict(inputs))
-embeddings = outputs
-print(embeddings)
+```bash
+curl -X POST -F "file=@/path/to/your/document.pdf" http://localhost:8000/train
 ```
 
-## Citation
+The server will respond with a `job_id`:
 
-If you use this model in your work, please cite:  
-- The original Google Gemma embedding model papers (links on original repo).  
-- This repository and Hugging Face hosting if applicable.
+```json
+{
+  "job_id": "a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6"
+}
+```
 
----
+You can then use this `job_id` to poll the status of the job:
 
-Feel free to contribute improvements or report issues via this repository’s GitHub page.
+```bash
+curl http://localhost:8000/train/status/a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
+```
 
----
+The response will show the current status and progress:
 
-*Last updated: November 2025*  
-*Maintainer: be1newinner*
+```json
+{
+  "status": "processing",
+  "progress": 50,
+  "total": 100
+}
+```
