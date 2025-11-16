@@ -4,16 +4,38 @@ import {
   getDocumentByIdService,
   ingestDocumentsService,
 } from "../services/document.service";
-import { IngestRequest } from "../interfaces/document.interface";
 import { createStatusService } from "@/services/status.service";
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 
 export const ingestDocumentsController = async (
   req: Request,
   res: Response
 ) => {
   try {
-    const ingestRequest: IngestRequest = req.body;
-    const result = await ingestDocumentsService(ingestRequest);
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    const fileBlob = new Blob([new Uint8Array(req.file.buffer)], {
+      type: req.file.mimetype,
+    });
+
+    const loader = new PDFLoader(fileBlob);
+    const docs = await loader.load();
+
+    const textSplitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 1000,
+      chunkOverlap: 200,
+    });
+
+    const splits = await textSplitter.splitDocuments(docs);
+
+    const result = await ingestDocumentsService({
+      documents: splits.map((doc) => ({
+        content: doc.pageContent,
+        metadata: doc.metadata,
+      })),
+    });
 
     const statusService = createStatusService();
     statusService.setLastIndexed(new Date());

@@ -1,17 +1,21 @@
+import "dotenv/config";
+
 import express from "express";
-import dotenv from "dotenv";
 import documentRoutes from "./routes/document.routes";
 import queryRoutes from "./routes/query.routes";
 import statusRoutes from "./routes/status.routes";
 import { EMBEDDING_SIZE } from "./core/config";
 import { vectorDB } from "./features/vector_db";
-
-dotenv.config();
+import swaggerUi from "swagger-ui-express";
+import { openapiSpecification } from "./core/swagger-docs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+
 app.use("/documents", documentRoutes);
 app.use("/query", queryRoutes);
 app.use("/status", statusRoutes);

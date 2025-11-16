@@ -1,6 +1,6 @@
 import { QdrantClient } from "@qdrant/js-client-rest";
 import { getCollectionInfo, setupCollection } from "./qdrantService";
-import { COLLECTION_NAME, QDRANT_URL } from "@/core/config";
+import { COLLECTION_NAME, QDRANT_URL, qdrantKey } from "@/core/config";
 import { queryRag } from "../rag/queryRag";
 import {
   DeleteDocumentResponse,
@@ -180,6 +180,9 @@ class VectorDB implements VectorDBInterface {
   }
 }
 
-export const qdrantClient = new QdrantClient({ url: QDRANT_URL });
+export const qdrantClient = new QdrantClient({
+  url: QDRANT_URL,
+  apiKey: qdrantKey,
+});
 
 export const vectorDB = new VectorDB(COLLECTION_NAME, qdrantClient);

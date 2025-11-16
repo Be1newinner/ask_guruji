@@ -1,0 +1,4 @@
+# Environment variables
+.env
+pdfs
+__pycache__

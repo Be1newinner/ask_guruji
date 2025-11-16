@@ -1,0 +1,16 @@
+accelerate
+huggingface-hub
+langchain
+langchain-community
+langchain-text-splitters
+numpy
+onnx
+onnxruntime
+optimum
+optimum-onnx
+pypdf
+python-dotenv
+qdrant-client
+sentence-transformers
+tokenizers
+transformers
